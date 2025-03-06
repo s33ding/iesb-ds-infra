@@ -6,3 +6,9 @@ variable my_ip {}
 variable instance_type {}
 variable public_key_location {}
 variable image_name {}
+
+variable "redshift_password" {
+  description = "Password for the Redshift admin user"
+  sensitive   = true
+}
+

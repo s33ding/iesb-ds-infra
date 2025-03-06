@@ -1,32 +1,38 @@
 provider "aws" {
-  region = "eu-central-1"
+  region = "us-east-1"
 }
 
-resource "aws_vpc" "myapp-vpc" {
-  cidr_block = var.vpc_cidr_block
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+
+  name = "${var.env_prefix}-vpc"
+  cidr = var.vpc_cidr_block
+
+  azs              = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  public_subnets   = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  private_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+
   tags = {
-    Name: "${var.env_prefix}-vpc"
+    Environment = var.env_prefix
   }
 }
 
-module "myapp-subnet" {
-  source = "./modules/subnet"
-  subnet_cidr_block = var.subnet_cidr_block
-  avail_zone = var.avail_zone
-  env_prefix = var.env_prefix
-  vpc_id = aws_vpc.myapp-vpc.id
-  default_route_table_id = aws_vpc.myapp-vpc.default_route_table_id
-}
 
-module "myapp-server" {
-  source = "./modules/webserver"
-  vpc_id = aws_vpc.myapp-vpc.id
-  my_ip = var.my_ip
-  env_prefix = var.env_prefix
-  image_name = var.image_name
+module "webserver" {
+  source              = "./modules/webserver"
+  vpc_id              = module.vpc.vpc_id
+  my_ip                = var.my_ip
+  env_prefix          = var.env_prefix
+  image_name          = var.image_name
   public_key_location = var.public_key_location
-  instance_type = var.instance_type
-  subnet_id = module.myapp-subnet.subnet.id
-  avail_zone = var.avail_zone
-
+  instance_type       = var.instance_type
+  subnet_id           = module.vpc.public_subnets[0]
+  avail_zone          = "us-east-1a"
 }
+
+module "redshift" {
+  source            = "./modules/redshift"
+  env_prefix        = var.env_prefix
+  redshift_password = var.redshift_password
+}
+
