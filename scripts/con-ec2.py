@@ -7,7 +7,7 @@ import sys
 
 # Configurations (you can load these from env vars, config files, etc.)
 ENV_PREFIX = "dev"
-KEY_PATH = "secrets/dataeisb.pem"
+KEY_PATH = "../secrets/dataeisb.pem"
 REGION = "us-east-1"  # Adjust if needed
 INSTANCE_NAME = f"{ENV_PREFIX}-server"
 

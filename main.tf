@@ -17,7 +17,6 @@ module "vpc" {
   }
 }
 
-
 module "webserver" {
   source              = "./modules/webserver"
   vpc_id              = module.vpc.vpc_id
@@ -30,9 +29,23 @@ module "webserver" {
   avail_zone          = "us-east-1a"
 }
 
+module "rds" {
+  source                 = "./modules/rds"
+  env_prefix             = var.env_prefix
+  rds_password           = var.rds_password
+  rds_instance_class     = var.rds_instance_class
+  allocated_storage      = var.allocated_storage
+  public_subnet_ids      = module.vpc.public_subnets
+  vpc_id                  = module.vpc.vpc_id
+  vpc_cidr                = var.vpc_cidr_block
+}
+
 module "redshift" {
   source            = "./modules/redshift"
   env_prefix        = var.env_prefix
   redshift_password = var.redshift_password
+  public_subnet_ids = module.vpc.public_subnets
+  vpc_id            = module.vpc.vpc_id
+  vpc_cidr          = var.vpc_cidr_block
 }
 

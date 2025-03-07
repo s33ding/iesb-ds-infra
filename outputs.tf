@@ -22,3 +22,11 @@ output "redshift_cluster_id" {
   value = module.redshift.redshift_cluster_id
 }
 
+output "rds_endpoint" {
+  value = module.rds.rds_endpoint
+}
+
+output "rds_instance_id" {
+  value = module.rds.rds_instance_id
+}
+

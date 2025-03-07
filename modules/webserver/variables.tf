@@ -6,3 +6,9 @@ variable public_key_location {}
 variable instance_type {}
 variable subnet_id {}
 variable avail_zone {}
+variable "additional_security_groups" {
+  description = "List of additional security groups to attach to the webserver"
+  type        = list(string)
+  default     = []
+}
+
