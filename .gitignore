@@ -14,3 +14,12 @@
 
 .*.swo.*
 .*.swp.*
+
+# Ignore Terraform state and cache
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+
