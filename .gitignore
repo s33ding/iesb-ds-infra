@@ -1,13 +1,16 @@
 # local .terraform dir
-.terraform/*
+.terraform/
 
-# tf state files
+# rf state files
 *.tfstate
 *.tfstate.*
 
-# tf variable files, may include sensitive data
+# tf variables files, may include sensitive data
 *.tfvars
+*.tfvars.*
 
-secrets/
-*.pem
+*.hcl
+*.hcl
 
+.*.swo.*
+.*.swp.*
