@@ -34,17 +34,15 @@ variable "enable_nat_gateway" {
   default     = true
 }
 
+#====
 
-
-# List of public subnet IDs
-variable "public_subnet_ids" {
-  type = list(string)
+output "vpc_id" {
+  description = "The ID of the created VPC"
+  value       = module.vpc.vpc_id
 }
 
-# Map subnet IDs to Availability Zones
-variable "subnet_az_map" {
-  type = map(string)
+output "private_subnets" {
+  description = "List of private subnet IDs"
+  value       = module.vpc.private_subnets
 }
-
-
 

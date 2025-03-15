@@ -1,17 +1,26 @@
-variable "env_prefix" {}
-variable "redshift_password" {}
+variable "env_prefix" {
+  description = "Environment prefix for naming resources"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "VPC ID where Redshift will be deployed"
+  type        = string
+}
+
+variable "public_subnets" {
+  description = "List of public subnet IDs"
+  type        = list(string)
+}
+
+
+# List of public subnet IDs
 variable "public_subnet_ids" {
   type = list(string)
 }
 
-variable "additional_security_groups" {
-  description = "List of additional security groups to allow inbound access to Redshift"
-  type        = list(string)
-  default     = []
-}
-
-variable "vpc_id" {
-  description = "VPC ID where the Redshift cluster is deployed"
-  type        = string
+# Map subnet IDs to Availability Zones
+variable "subnet_az_map" {
+  type = map(string)
 }
 

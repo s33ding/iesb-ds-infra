@@ -1,35 +1,43 @@
+# Variables
 variable "env_prefix" {
-  type = string
+  description = "Environment name (e.g., prod, dev, staging)"
+  type        = string
+  default     = "prod"
 }
 
-variable "rds_password" {
-  type = string
-}
-
-variable "rds_instance_class" {
-  type = string
-}
-
-variable "allocated_storage" {
-  type = number
-}
-
-variable "public_subnet_ids" {
-  type = list(string)
-}
 
 variable "vpc_id" {
-  type = string
-}
-
-variable "additional_security_groups" {
-  description = "Extra security groups to attach to RDS (e.g., webserver, redshift)"
-  type        = list(string)
-  default     = []
-}
-
-variable "vpc_cidr" {
-  description = "The VPC CIDR block to allow inbound traffic from"
+  description = "VPC ID"
   type        = string
 }
 
+
+
+variable "public_subnets" {
+  description = "List of public subnets for RDS"
+  type        = list(string)
+}
+
+variable "secret_name" {
+  description = "The name of the secret in AWS Secrets Manager"
+  type        = string
+  default     = "rds-secret"
+}
+
+variable "rds_instance_class" {
+  description = "Instance type for the RDS instance"
+  type        = string
+  default     = "db.t3.medium"
+}
+
+# Outputs
+
+output "rds_host" {
+  description = "RDS endpoint (hostname)"
+  value       = aws_db_instance.rds.endpoint
+}
+
+output "rds_secret_arn" {
+  description = "Secrets Manager ARN storing DB credentials"
+  value       = data.aws_secretsmanager_secret.rds_secret
+}
