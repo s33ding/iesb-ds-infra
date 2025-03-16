@@ -1,48 +1,20 @@
-# local .terraform dir
-.terraform/
-
-# rf state files
-*.tfstate
-*.tfstate.*
-
-# tf variables files, may include sensitive data
-*.tfvars
-*.tfvars.*
-
-*.hcl
-*.hcl
-
-.*.swo.*
-.*.swp.*
-
-# Ignore Terraform state and cache
-.terraform/
-terraform.tfstate
-terraform.tfstate.*
-*.tfstate.backup
-*.tfvars
-*.tfvars.json
-
-echo ".terraform/" >> .gitignore
-echo "terraform.tfstate*" >> .gitignore
-echo "*.tfvars" >> .gitignore
-
-
-# Ignore local Terraform cache & backend files
+# Ignore Terraform directories and files
 .terraform/
 .terraform.lock.hcl
-
-# Ignore Terraform state files (even with backups)
 terraform.tfstate
 terraform.tfstate.*
 *.tfstate.backup
-
-# Ignore Terraform variable files (often contain secrets)
 *.tfvars
 *.tfvars.json
 
-# Ignore editor swap files
+# Ignore Terraform provider binaries
+.terraform/providers/
+
+# Ignore temporary editor files
 .*.swo
 .*.swp
 
-.terraform/
+# Ignore any swap files created by editors
+*.swp
+*.swo
+
