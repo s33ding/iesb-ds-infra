@@ -28,3 +28,21 @@ echo "terraform.tfstate*" >> .gitignore
 echo "*.tfvars" >> .gitignore
 
 
+# Ignore local Terraform cache & backend files
+.terraform/
+.terraform.lock.hcl
+
+# Ignore Terraform state files (even with backups)
+terraform.tfstate
+terraform.tfstate.*
+*.tfstate.backup
+
+# Ignore Terraform variable files (often contain secrets)
+*.tfvars
+*.tfvars.json
+
+# Ignore editor swap files
+.*.swo
+.*.swp
+
+.terraform/
