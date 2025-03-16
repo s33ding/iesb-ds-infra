@@ -1,25 +1,65 @@
+
+resource "aws_network_acl" "redshift_acl" {
+  vpc_id = var.vpc_id
+  subnet_ids = var.public_subnet_ids
+
+  # Allow inbound Redshift traffic (TCP 5439) from anywhere (Adjust CIDR as needed)
+  ingress {
+    rule_no    = 100
+    action     = "allow"
+    protocol   = "tcp"
+    from_port  = 5439
+    to_port    = 5439
+    cidr_block = "0.0.0.0/0"
+  }
+
+  # Allow all outbound traffic
+  egress {
+    rule_no    = 100
+    action     = "allow"
+    protocol   = "-1"
+    from_port  = 0
+    to_port    = 0
+    cidr_block = "0.0.0.0/0"
+  }
+
+  tags = {
+    Name = "${var.env_prefix}-redshift-acl"
+  }
+}
+
+resource "aws_network_acl_association" "redshift_acl_association" {
+  count = length(var.public_subnet_ids)
+
+  network_acl_id = aws_network_acl.redshift_acl.id
+  subnet_id      = var.public_subnet_ids[count.index]
+}
+
 resource "aws_security_group" "redshift_sg" {
   vpc_id = var.vpc_id
   name   = "${var.env_prefix}-redshift-sg"
 
+  # ✅ Allow inbound connections on Redshift's port 5439 from anywhere
   ingress {
     from_port   = 5439
     to_port     = 5439
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # 🔴 Adjust this for security (avoid opening to all)
+    cidr_blocks = ["0.0.0.0/0"]  # 🌍 Public access (adjust for security)
   }
 
+  # ✅ Ensure Redshift can send responses to any external client
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]  # Allow all outbound traffic
   }
 
   tags = {
     Name = "${var.env_prefix}-redshift-sg"
   }
 }
+
 
 data "aws_secretsmanager_secret_version" "redshift_secret" {
   secret_id = "redshift-secret"
@@ -47,24 +87,13 @@ resource "aws_redshift_cluster" "redshift" {
   }
 }
 
-# Select unique AZ subnets dynamically
-locals {
-  unique_az_subnets = distinct([
-    for subnet in var.public_subnet_ids : subnet
-    if length([
-      for s in var.public_subnet_ids : s
-      if s != subnet && var.subnet_az_map[s] != var.subnet_az_map[subnet]
-    ]) > 0
-  ])
-}
 
-# Create Redshift Subnet Group
 resource "aws_redshift_subnet_group" "redshift_subnet_group" {
   name       = "${var.env_prefix}-redshift-subnet-group"
-  subnet_ids = slice(local.unique_az_subnets, 0, 2) # Select 2 subnets in different AZs
+  subnet_ids = var.public_subnet_ids  # ✅ Use public subnet IDs from root module
 
   tags = {
     Name = "${var.env_prefix}-redshift-subnet-group"
   }
 }
-
+ 

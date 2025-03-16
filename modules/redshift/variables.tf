@@ -24,3 +24,9 @@ variable "subnet_az_map" {
   type = map(string)
 }
 
+
+variable "internet_gateway_id" {
+  description = "The ID of the Internet Gateway"
+  type        = string
+}
+

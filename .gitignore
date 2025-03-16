@@ -23,3 +23,8 @@ terraform.tfstate.*
 *.tfvars
 *.tfvars.json
 
+echo ".terraform/" >> .gitignore
+echo "terraform.tfstate*" >> .gitignore
+echo "*.tfvars" >> .gitignore
+
+

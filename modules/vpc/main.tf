@@ -15,12 +15,13 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
+
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id  # ✅ Use the VPC ID from the resource created in this module
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id
+    gateway_id = aws_internet_gateway.main.id  # ✅ Use IGW ID from this module
   }
 
   tags = {
@@ -29,11 +30,10 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  count          = length(var.public_subnets)
-  subnet_id      = element(aws_subnet.public[*].id, count.index)
+  count          = length(var.public_subnet_ids)
+  subnet_id      = var.public_subnet_ids[count.index]  # ✅ Associate public subnets
   route_table_id = aws_route_table.public.id
 }
-
 
 resource "aws_subnet" "private" {
   count = length(var.private_subnets)
